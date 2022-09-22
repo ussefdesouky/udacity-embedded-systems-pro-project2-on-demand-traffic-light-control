@@ -5,14 +5,17 @@ CC = avr-gcc
 OBJCOPY = avr-objcopy
 CFLAGS = -std=c99 -Wall -g -Os -mmcu=${MCU} -DF_CPU=${F_CPU} -I.
 PORT = /dev/ttyS10
-TARGET = mymain
+TARGET = main
 SRCS =  \
-mymain.c \
-mcal/io/io.c
+main.c \
+mcal/io/io.c \
+mcal/timer/timer.c \
+mcal/isr/isr.c \
+ecual/led/led.c \
+ecual/button/button.c \
+application/application.c \
 
-#main: ./mcal/io/io.o
-#		${CC}  ${CFLAGS} -o ${TARGET}.o  ${SRCS} ./mcal/io/io.o
-#		${OBJCOPY} -j .text -j .data -O ihex ${TARGET}.bin ${TARGET}.hex
+
 
 all:
 		${CC}  ${CFLAGS} -o ${TARGET}.o ${SRCS} 

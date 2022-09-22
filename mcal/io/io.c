@@ -1,4 +1,3 @@
-#include "../../util/registers.h"
 #include "io.h"
 
 void ioInit(uint8_t port, uint8_t pin, uint8_t dir)
@@ -161,14 +160,63 @@ void ioWrite(uint8_t port, uint8_t pin, uint8_t data)
     }
 }
 
-void ioToggle(uint8_t port, uint8_t pin)
+void ioToggle(uint8_t port, uint8_t pin, uint16_t delay)
 {
+    switch (port)
+    {
+        case PORT_A:
+            PORTA ^= (1 << pin);
+            msTimerDelay(delay);
+            break;
 
+        case PORT_B:
+            PORTB ^= (1 << pin); 
+            msTimerDelay(delay);
+            break;
+        
+        case PORT_C:
+            PORTC ^= (1 << pin); 
+            msTimerDelay(delay);
+            break;
+        
+        case PORT_D:
+            PORTD ^= (1 << pin); 
+            msTimerDelay(delay);
+            break;
+    
+        default:
+            // Errors are handeled using a red led connected to PORTD and set HIGH
+            *((volatile uint8_t *)0x31)  |= (1 << 7);   //DDRD
+            *((volatile uint8_t*)0x32) |= (1 << 7);     //PORTD
+            break;
+    }
 }
 
-/*
-uint8_t ioRead(uint8_t port, uint8_t pin, uint8_t *data)
-{
 
+void ioRead(uint8_t port, uint8_t pin, uint8_t *data)
+{
+    switch (port)
+    {
+        case PORT_A:
+            *data =  (PINA & (1 << pin)) >> pin;
+            break;
+
+        case PORT_B:
+            *data =  (PINB & (1 << pin)) >> pin;
+            break;
+
+        case PORT_C:
+            *data =  (PINC & (1 << pin)) >> pin;
+            break;
+            
+        case PORT_D:
+            *data =  (PIND & (1 << pin)) >> pin;
+            break;
+        
+        default:
+            // Errors are handeled using a red led connected to PORTD and set HIGH
+            *((volatile uint8_t *)0x31)  |= (1 << 7);   //DDRD
+            *((volatile uint8_t*)0x32) |= (1 << 7);     //PORTD
+            break;
+    }
 }
-*/

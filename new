@@ -1,0 +1,42 @@
+/*ledOn(CAR_PORT, CAR_RED);
+        ledToggle(CAR_PORT, CAR_YELLOW);
+
+        btnRead(PORT_D, PEDS_BTN, &btnState);
+        if(btnState == HIGH)
+        {
+            ledOn(CAR_PORT, CAR_GREEN);
+        }
+        else if(btnState == LOW)
+        {
+            ledOff(CAR_PORT, CAR_GREEN);
+        }*/
+        /*ledOn(CAR_PORT, CAR_RED);
+        msTimerDelay(5000);
+        ledOff(CAR_PORT, CAR_RED);
+        msTimerDelay(5000);*/
+        switch(ledNumber)
+        {
+            case 0:
+                ledOff(CAR_PORT, CAR_RED);
+                ledOff(CAR_PORT, CAR_YELLOW);
+                ledOff(CAR_PORT, CAR_GREEN);
+                break;
+            case 1:
+                ledOn(CAR_PORT, CAR_RED);
+                ledOff(CAR_PORT, CAR_YELLOW);
+                ledOff(CAR_PORT, CAR_GREEN);
+                break;
+            case 2:
+                ledOn(CAR_PORT, CAR_RED);
+                ledOn(CAR_PORT, CAR_YELLOW);
+                ledOff(CAR_PORT, CAR_GREEN);
+                break;
+            case 3:
+                ledOn(CAR_PORT, CAR_RED);
+                ledOn(CAR_PORT, CAR_YELLOW);
+                ledOn(CAR_PORT, CAR_GREEN);
+                break;
+            default:
+                break;
+        }
+    }

@@ -1,6 +1,9 @@
-#ifndef DIO_H
-#define DIO_H
- 
+#ifndef IO_H
+#define IO_H
+
+#include "../../util/registers.h"
+#include "../../mcal/timer/timer.h"
+
 /*******************************************************************************/
 /*############################## IO PORTS MACROS ##############################*/
 /*******************************************************************************/
@@ -23,17 +26,12 @@
 #define HIGH 1
 
 /*******************************************************************************/
-/*################################## TYPEDEFS #################################*/
-/*******************************************************************************/
-typedef unsigned char uint8_t;
-
-/*******************************************************************************/
 /*############################## FUNC() PROTOTYPES ############################*/
 /*******************************************************************************/
 void ioInit(uint8_t port, uint8_t pin, uint8_t dir);
 void ioWrite(uint8_t port, uint8_t pin, uint8_t data);
-void ioToggle(uint8_t port, uint8_t pin);
-uint8_t ioRead(uint8_t port, uint8_t pin, uint8_t *data);
+void ioToggle(uint8_t port, uint8_t pin, uint16_t delay);
+void ioRead(uint8_t port, uint8_t pin, uint8_t *data);
 
 
 #endif
