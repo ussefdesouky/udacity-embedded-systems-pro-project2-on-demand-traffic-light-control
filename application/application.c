@@ -1,23 +1,8 @@
-// implement cars traffic light func
-// switch from red to green
-
-// switch from green to red
-
-// yellow blink
-
-
-// implement pedestrian interrupt
-
-// implement peds traffic light
-// switch from red to green
-
-// switch from green to red
-
-// yellow blink
 #include "application.h"
 
-uint8_t btnPressed = 0;
 uint8_t trafficCycle = 0;
+
+EN_trafficMode_t trafficMode = NORMAL_MODE_ON;
 EN_trafficStatus_t trafficStatus = RED_ON;
 
 void appInit()
@@ -38,95 +23,63 @@ void appInit()
 
 void appStart()
 {
-    if(trafficStatus > 4)
-    {
-        trafficStatus = RED_ON;
-    }
     switch (trafficStatus)
     {
         case RED_ON:
-            if(trafficCycle > 0)
+            if(trafficCycle > 1)
             {
-                btnPressed = 0;
+                trafficMode = NORMAL_MODE_ON;
             }
-            if(btnPressed == 0)
+            if(trafficMode == NORMAL_MODE_ON)
             {
                 carStop();
-                trafficStatus = YELLOW_R_ON;
             }
-            else if(btnPressed == 1)
+            else if(trafficMode == NORMAl_MODE_OFF)
             {
                 pedMove();
-                trafficStatus = YELLOW_R_ON;
             }
+            trafficStatus = YELLOW_R_ON;
             break;
 
         case YELLOW_R_ON:
-            if(btnPressed == 0)
+            if(trafficMode == NORMAL_MODE_ON)
             {
                 carWarn();
-                if(trafficStatus == YELLOW_R_ON)
-                {
-                    trafficStatus = GREEN_ON;
-                }
-                else if(trafficStatus == YELLOW_G_ON)
-                {
-                    trafficStatus = RED_ON;
-                }
+                trafficStatus = GREEN_ON;
             }
-            else if(btnPressed == 1)
-            {
+            else if(trafficMode == NORMAl_MODE_OFF)
+            {   
                 pedWarn();
-                if(trafficStatus == YELLOW_R_ON)
-                {
-                    trafficStatus = GREEN_ON;
-                }
-                else if(trafficStatus == YELLOW_G_ON)
-                {
-                    trafficStatus = RED_ON;
-                }
+                trafficStatus = GREEN_ON;
             }
             break;
 
         case GREEN_ON:
-            if(btnPressed == 0)
+            if(trafficMode == NORMAL_MODE_ON)
             {
                 carMove();
                 trafficStatus = YELLOW_G_ON;
             }
-            else if(btnPressed == 1)
+            else if(trafficMode == NORMAl_MODE_OFF)
             {
                 pedStop();
-                trafficStatus = YELLOW_G_ON;
+                pedWarn();
+                trafficStatus = RED_ON;
             }
             break;
         
         case YELLOW_G_ON:
-            if(btnPressed == 0)
+            if(trafficMode == NORMAL_MODE_ON)
             {
                 carWarn();
-                if(trafficStatus == YELLOW_R_ON)
-                {
-                    trafficStatus = GREEN_ON;
-                }
-                else if(trafficStatus == YELLOW_G_ON)
-                {
-                    trafficStatus = RED_ON;
-                }
             }
-            else if(btnPressed == 1)
-            {
+            else if(trafficMode == NORMAl_MODE_OFF)
+            {   
+                ledOn(PED_PORT, PED_RED);
                 pedWarn();
-                if(trafficStatus == YELLOW_R_ON)
-                {
-                    trafficStatus = GREEN_ON;
-                }
-                else if(trafficStatus == YELLOW_G_ON)
-                {
-                    trafficStatus = RED_ON;
-                }
                 trafficCycle++;
             }
+            trafficStatus = RED_ON;
             break;
 
         default:
@@ -135,9 +88,9 @@ void appStart()
 }
 
 ISR(EXT_INT0){
-    if(trafficStatus == GREEN_ON || trafficStatus == YELLOW_R_ON)
+    if(trafficStatus == GREEN_ON)
     {
-        btnPressed = 1;
+        trafficMode = NORMAl_MODE_OFF;
         trafficCycle = 0;
         trafficStatus = YELLOW_G_ON;
     }
@@ -151,25 +104,23 @@ void carStop()
     ledOff(CAR_PORT, CAR_GREEN);
     ledOff(CAR_PORT, CAR_YELLOW);
     ledOn(CAR_PORT, CAR_RED);
-    for(uint8_t i = 0; i < 10; i++){
-        msTimerDelay(500);
-    }
+    msTimerDelay(5000);
 }
 
 void carMove()
 {
-    btnPressed = 0;
+    trafficMode = NORMAL_MODE_ON;
+
     ledOff(PED_PORT, PED_GREEN);
     ledOff(PED_PORT, PED_YELLOW);
     ledOff(PED_PORT, PED_RED);
     ledOff(CAR_PORT, CAR_RED);
     ledOff(CAR_PORT, CAR_YELLOW);
     ledOn(CAR_PORT, CAR_GREEN);
-    for(uint8_t i = 0; i < 10; i++){
+    for(uint8_t i = 0; i < 20; i++){
         msTimerDelay(500);
-        if(btnPressed == 1 && trafficCycle == 0)
+        if(trafficMode == NORMAl_MODE_OFF && trafficCycle == 0)
         {   
-            pedWarn();
             break;
         }
     }
@@ -180,27 +131,29 @@ void carWarn()
     ledOff(PED_PORT, PED_GREEN);
     ledOff(PED_PORT, PED_YELLOW);
     ledOff(PED_PORT, PED_RED);
-    for(uint8_t i = 0; i < 10; i++){
-        ledToggle(CAR_PORT, CAR_YELLOW, 500);
-        if(btnPressed == 1)
-        {   
-            pedWarn();
-            break;
-        }
-        
+    for(uint8_t i = 0; i < 8; i++){
+        ledToggle(CAR_PORT, CAR_YELLOW, 1000);
     }
 }
 
 void pedStop()
-{
+{   
+    trafficMode = NORMAL_MODE_ON;
+
     ledOff(CAR_PORT, CAR_RED);
     ledOff(PED_PORT, PED_GREEN);
     ledOff(CAR_PORT, CAR_YELLOW);
     ledOff(PED_PORT, PED_YELLOW);
     ledOn(CAR_PORT, CAR_GREEN);
     ledOn(PED_PORT, PED_RED);
-    for(uint8_t i = 0; i < 10; i++){
+    
+    for(uint8_t i = 0; i < 20; i++){
         msTimerDelay(500);
+        if(trafficMode == NORMAl_MODE_OFF && trafficCycle < 2)
+        {   
+            pedWarn();
+            break;
+        }
     }
 }
 
@@ -212,19 +165,19 @@ void pedMove()
     ledOff(PED_PORT, PED_YELLOW);
     ledOn(CAR_PORT, CAR_RED);
     ledOn(PED_PORT, PED_GREEN);
-    for(uint8_t i = 0; i < 10; i++){
+    for(uint8_t i = 0; i < 20; i++){
         msTimerDelay(500);
     }
 }
 
 void pedWarn()
 {
-    for(uint8_t i = 0; i < 5; i++){
+    for(uint8_t i = 0; i < 4; i++){
         ledOn(CAR_PORT, CAR_YELLOW);
         ledOn(PED_PORT, PED_YELLOW);
-        msTimerDelay(500);
+        msTimerDelay(1000);
         ledOff(CAR_PORT, CAR_YELLOW);
         ledOff(PED_PORT, PED_YELLOW);
-        msTimerDelay(500);
+        msTimerDelay(1000);
     }
 }

@@ -27,6 +27,11 @@ typedef enum EN_trafficStatus_t
     RED_ON, YELLOW_R_ON, GREEN_ON, YELLOW_G_ON
 }EN_trafficStatus_t;
 
+typedef enum EN_trafficMode_t
+{
+    NORMAl_MODE_OFF, NORMAL_MODE_ON
+}EN_trafficMode_t;
+
 void appInit();
 void appStart();
 
