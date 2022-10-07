@@ -1,3 +1,11 @@
+/*******************************************************************************/
+/*################################## SKELETON #################################*/
+/*******************************************************************************/
+// 1. Include needed libraries.
+// 2. Define the functions prototypes.
+// 3. Define module macros.
+// 4. Define global variables.
+
 #include "timer.h"
 
 uint16_t overFlowCnt = 0;

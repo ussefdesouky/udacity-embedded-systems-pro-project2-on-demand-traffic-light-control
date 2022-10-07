@@ -1,3 +1,11 @@
+/*******************************************************************************/
+/*################################## SKELETON #################################*/
+/*******************************************************************************/
+// 1. Include needed libraries.
+// 2. Define functions prototypes.
+// 3. Define module macros
+// 4. Define global variables
+
 #include "application.h"
 
 uint8_t trafficCycle = 0;
@@ -7,15 +15,19 @@ EN_trafficStatus_t trafficStatus = RED_ON;
 
 void appInit()
 {   
+    // Initialize ISR
     isrInit(INT_0);
     isrMode(INT_0, RISING);
 
+    // Initialize timer
     timerInit();
 
+    //Initialize car traffic leds
     ledInit(CAR_PORT, CAR_GREEN);
     ledInit(CAR_PORT, CAR_YELLOW);
     ledInit(CAR_PORT, CAR_RED);
 
+    //Initialize pedestrian traffic leds
     ledInit(PED_PORT, PED_GREEN);
     ledInit(PED_PORT, PED_YELLOW);
     ledInit(PED_PORT, PED_RED);
@@ -90,8 +102,8 @@ void appStart()
 ISR(EXT_INT0){
     if(trafficStatus == GREEN_ON)
     {
-        trafficMode = NORMAl_MODE_OFF;
         trafficCycle = 0;
+        trafficMode = NORMAl_MODE_OFF;
         trafficStatus = YELLOW_G_ON;
     }
 }

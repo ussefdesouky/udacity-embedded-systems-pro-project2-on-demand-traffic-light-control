@@ -1,3 +1,11 @@
+/*******************************************************************************/
+/*################################## SKELETON #################################*/
+/*******************************************************************************/
+// 1. Include needed libraries.
+// 2. Define the functions prototypes
+// 3. Define module macros
+
+
 #ifndef IO_H
 #define IO_H
 
@@ -11,7 +19,6 @@
 #define PORT_B 'B'
 #define PORT_C 'C'
 #define PORT_D 'D'
-
 
 /*******************************************************************************/
 /*############################ IO DIRECTION MACROS ############################*/
@@ -28,10 +35,17 @@
 /*******************************************************************************/
 /*############################## FUNC() PROTOTYPES ############################*/
 /*******************************************************************************/
-void ioInit(uint8_t port, uint8_t pin, uint8_t dir);
-void ioWrite(uint8_t port, uint8_t pin, uint8_t data);
-void ioToggle(uint8_t port, uint8_t pin, uint16_t delay);
-void ioRead(uint8_t port, uint8_t pin, uint8_t *data);
+// Initialize the io direction
+void ioInit(uint8_t port, uint8_t pin, uint8_t dir);  
+
+// Write the io data
+void ioWrite(uint8_t port, uint8_t pin, uint8_t data);      
+
+// Toggle the required io pin
+void ioToggle(uint8_t port, uint8_t pin, uint16_t delay);   
+
+// Read the io data
+void ioRead(uint8_t port, uint8_t pin, uint8_t *data);      
 
 
 #endif
